@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,6 +29,10 @@ body {
   font-family: "Courier New", monospace;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+body.gate-locked {
+  overflow: hidden;
 }
 
 body::before {
@@ -62,6 +66,130 @@ a {
   text-decoration: none;
 }
 
+/* =================================
+   IDENTITY ACCESS GATE
+================================= */
+
+.identity-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #050706;
+  overflow-y: auto;
+  transition: opacity .7s ease, visibility .7s ease;
+}
+
+.identity-gate.unlocked {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gate-content {
+  width: 100%;
+  max-width: 560px;
+  border: 1px solid #334b2d;
+  background: #080d08;
+  padding: clamp(22px, 5vw, 40px);
+  box-shadow: 0 0 45px #a5ff000a;
+  position: relative;
+}
+
+.gate-content::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  width: 60%;
+  height: 1px;
+  background: var(--pink);
+  box-shadow: 0 0 12px var(--pink);
+}
+
+.gate-label {
+  color: var(--pink);
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-bottom: 28px;
+  animation: flicker 4s infinite;
+}
+
+.gate-title {
+  color: var(--green);
+  font-size: clamp(32px, 7vw, 52px);
+  line-height: 1.1;
+  letter-spacing: -2px;
+  text-shadow: 2px 0 var(--pink);
+  margin-bottom: 20px;
+  animation: flicker 5s infinite;
+}
+
+.gate-description {
+  color: #929d90;
+  font-size: 12px;
+  line-height: 2;
+  margin-bottom: 25px;
+}
+
+.gate-options {
+  display: grid;
+  gap: 10px;
+}
+
+.gate-option {
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  border: 1px solid #263526;
+  background: #050706;
+  color: var(--green);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.gate-option:hover,
+.gate-option:focus-visible {
+  outline: none;
+  border-color: var(--pink);
+  color: var(--pink);
+  background: #f05bff0a;
+  transform: translateX(4px);
+}
+
+.gate-option:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.gate-message {
+  min-height: 44px;
+  margin-top: 22px;
+  color: #7d897b;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.gate-footer {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px dashed #263526;
+  color: #596354;
+  font-size: 9px;
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+
+/* =================================
+   NAVIGATION
+================================= */
+
 nav {
   position: relative;
   z-index: 20;
@@ -82,6 +210,10 @@ nav {
   text-shadow: 0 0 12px #a5ff0066;
 }
 
+.logo span {
+  color: var(--pink);
+}
+
 .nav-links {
   display: flex;
   gap: 18px;
@@ -97,6 +229,10 @@ nav {
 .nav-links a:hover {
   color: var(--pink);
 }
+
+/* =================================
+   MAIN CONTENT
+================================= */
 
 main {
   padding: 75px 7%;
@@ -230,38 +366,6 @@ h2 {
   text-shadow: 0 0 8px var(--pink);
 }
 
-.memory-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.memory {
-  border: 1px solid var(--line);
-  background: #090d0a;
-  padding: 22px;
-  min-height: 155px;
-}
-
-.date {
-  font-size: 10px;
-  color: var(--green);
-  margin-bottom: 18px;
-}
-
-.memory h3 {
-  color: var(--pink);
-  font-size: 15px;
-  margin-bottom: 12px;
-}
-
-.memory p {
-  color: #899287;
-  font-size: 12px;
-  line-height: 1.9;
-}
-
 .quote {
   border-left: 2px solid var(--pink);
   padding: 12px 0 12px 24px;
@@ -290,7 +394,9 @@ h2 {
   color: #050706;
 }
 
-
+/* =================================
+   FOOTER
+================================= */
 
 footer {
   border-top: 1px solid var(--line);
@@ -307,6 +413,10 @@ footer {
 footer span {
   color: var(--green);
 }
+
+/* =================================
+   ANIMATIONS & RESPONSIVE LAYOUT
+================================= */
 
 @keyframes blink {
   50% { opacity: 0; }
@@ -341,30 +451,92 @@ footer span {
     gap: 3px;
   }
 
-  .memory-grid,
-  .quiz-options {
-    grid-template-columns: 1fr;
-  }
-
   .nav-links {
     gap: 12px;
     font-size: 9px;
   }
 
-  .quiz-panel {
-    padding: 20px;
+  .gate-content {
+    padding: 24px;
   }
 }
 
 @media(prefers-reduced-motion:reduce) {
   *, *::before, *::after {
     animation: none !important;
+    transition: none !important;
   }
 }
 </style>
 </head>
 
-<body>
+<body class="gate-locked">
+
+<!-- =================================
+     IDENTITY ACCESS GATE
+================================= -->
+
+<section
+  class="identity-gate"
+  id="identityGate"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="gateTitle"
+>
+  <div class="gate-content">
+
+    <div class="gate-label">
+      WIRED//404 — RESTRICTED ACCESS
+    </div>
+
+    <h1 class="gate-title" id="gateTitle">
+      WHICH USER?
+    </h1>
+
+    <p class="gate-description">
+      Your identity must be verified before entering this layer.
+      <br>
+      Choose who you are.
+    </p>
+
+    <div class="gate-options">
+      <button class="gate-option" data-identity="UNKNOWN">
+        &gt; UNKNOWN
+      </button>
+
+      <button class="gate-option" data-identity="REDACTED">
+        &gt; (REDACTED)
+      </button>
+
+      <button class="gate-option" data-identity="LAINCELCORE">
+        &gt; LAINCELCORE
+      </button>
+
+      <button class="gate-option" data-identity="YOU">
+        &gt; YOU
+      </button>
+    </div>
+
+    <div
+      class="gate-message"
+      id="gateMessage"
+      aria-live="polite"
+    >
+      AWAITING IDENTITY INPUT..._
+    </div>
+
+    <div class="gate-footer" id="gateFooter">
+      SYSTEM: LOCKED
+      <br>
+      AUTHORIZATION REQUIRED TO ACCESS LAYER 02
+    </div>
+
+  </div>
+</section>
+
+<!-- =================================
+     WEBSITE NAVIGATION
+================================= -->
 
 <nav>
   <a href="https://laincelcore.github.io/wired/" class="logo">
@@ -378,6 +550,10 @@ footer span {
     <a href="https://laincelcore.github.io/wired/memories.html">MEMORY ARCHIVE</a>
   </div>
 </nav>
+
+<!-- =================================
+     LAYER 02 CONTENT
+================================= -->
 
 <main>
 
@@ -401,19 +577,28 @@ footer span {
 
     <div class="data">
       <div class="key">HOBBIES</div>
-      <div class="value">draw, write, code, playing chess and video games</div>
+      <div class="value">
+        draw, write, code, playing chess and video games
+      </div>
     </div>
 
     <div class="data">
       <div class="key">FANDOMS</div>
-      <div class="value">serial experiments lain, erased, blood c, another, shigatsu wa kimi no uso, 
-        corpse party, danganronpa (played all 3 games), studio ghibli, kingdom hearts 2, persona 4, 
-        kpop (wonyoung, ive, dreamcatcher, hearts2hearts, babymonster, purple kiss, pixy, etc) </div>
+      <div class="value">
+        serial experiments lain, erased, blood c, another,
+        shigatsu wa kimi no uso, corpse party, danganronpa
+        (played all 3 games), studio ghibli, kingdom hearts 2,
+        persona 4, kpop (wonyoung, ive, dreamcatcher,
+        hearts2hearts, babymonster, purple kiss, pixy, etc)
+      </div>
     </div>
 
     <div class="data">
       <div class="key">FAVORITE CHARACTERS</div>
-      <div class="value">lain iwakura, toko fukawa, chihiro fujisaki, saya kisaragi, aoi fukasaku</div>
+      <div class="value">
+        lain iwakura, toko fukawa, chihiro fujisaki,
+        saya kisaragi, aoi fukasaku
+      </div>
     </div>
 
     <div class="data">
@@ -438,7 +623,6 @@ footer span {
     The things we love leave traces of who we are.
   </div>
 
-
   <a class="btn" href="https://laincelcore.github.io/wired/">
     ← RETURN HOME
   </a>
@@ -451,8 +635,58 @@ footer span {
 </footer>
 
 <script>
+/* =================================
+   LAYER 02 IDENTITY AUTHENTICATION
+================================= */
 
+const identityGate = document.getElementById("identityGate");
+const gateMessage = document.getElementById("gateMessage");
+const gateFooter = document.getElementById("gateFooter");
+const gateOptions = document.querySelectorAll(".gate-option");
+
+gateOptions.forEach((option) => {
+  option.addEventListener("click", () => {
+
+    const identity = option.dataset.identity;
+
+    if (identity !== "YOU") {
+      gateMessage.textContent =
+        "IDENTITY REJECTED. YOU ARE NOT THE USER. TRY AGAIN.";
+
+      gateMessage.style.color = "#f05bff";
+
+      identityGate.classList.remove("rejected");
+      void identityGate.offsetWidth;
+      identityGate.classList.add("rejected");
+
+      return;
+    }
+
+    gateMessage.textContent =
+      "IDENTITY CONFIRMED. WELCOME TO THE WIRED.";
+
+    gateMessage.style.color = "#a5ff00";
+
+    gateOptions.forEach((button) => {
+      button.disabled = true;
+    });
+
+    gateFooter.innerHTML =
+      "IDENTITY VERIFIED<br>ACCESS GRANTED // LAYER 02";
+
+    setTimeout(() => {
+      identityGate.classList.add("unlocked");
+      document.body.classList.remove("gate-locked");
+    }, 900);
+
+    setTimeout(() => {
+      identityGate.remove();
+    }, 1700);
+
+  });
+});
 </script>
 
 </body>
 </html>
+```
