@@ -1,0 +1,672 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050706">
+<title>LAYER 02</title>
+
+<style>
+:root {
+  --bg: #050706;
+  --green: #a5ff00;
+  --pink: #f05bff;
+  --muted: #7d897b;
+  --panel: #0b100d;
+  --line: #263526;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: #e5eee4;
+  font-family: "Courier New", monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  opacity: .12;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    #b5ffc0 4px
+  );
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 75% 40%, #32103c 0%, transparent 40%),
+    radial-gradient(ellipse at 15% 80%, #163009 0%, transparent 35%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 24px 7%;
+  border-bottom: 1px solid var(--line);
+  background: #050706dd;
+}
+
+.logo {
+  color: var(--green);
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px #a5ff0066;
+}
+
+.nav-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.nav-links a {
+  transition: color .2s;
+}
+
+.nav-links a:hover {
+  color: var(--pink);
+}
+
+main {
+  padding: 75px 7%;
+  min-height: 75vh;
+}
+
+.status,
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--green);
+  margin-bottom: 24px;
+}
+
+.status::before {
+  content: "● ";
+  animation: blink 1s steps(2) infinite;
+}
+
+h1 {
+  font-size: clamp(45px, 9vw, 95px);
+  line-height: .92;
+  letter-spacing: -5px;
+  color: #edf5eb;
+  text-shadow: 4px 0 var(--pink), -3px 0 #a5ff0066;
+  margin-bottom: 28px;
+  animation: flicker 5s infinite;
+}
+
+h1 span {
+  display: block;
+  color: var(--green);
+  font-size: .35em;
+  letter-spacing: 4px;
+  margin-top: 22px;
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: clamp(25px, 5vw, 38px);
+  font-weight: normal;
+  margin-bottom: 18px;
+}
+
+.description {
+  max-width: 650px;
+  color: #929d90;
+  font-size: 13px;
+  line-height: 2;
+  margin-bottom: 30px;
+}
+
+.panel {
+  border: 1px solid #334b2d;
+  background: #080d08;
+  padding: 25px;
+  max-width: 760px;
+  margin-top: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 45%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #a5ff0008,
+    #f05bff16,
+    transparent
+  );
+  animation: panelScan 9s linear infinite;
+}
+
+.panel-head {
+  color: var(--pink);
+  font-size: 11px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 15px;
+  margin-bottom: 18px;
+  overflow-wrap: anywhere;
+}
+
+.data {
+  display: grid;
+  grid-template-columns: 165px 1fr;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.data:last-child {
+  border-bottom: 0;
+}
+
+.key {
+  color: var(--green);
+}
+
+.value {
+  color: #b6beb3;
+  overflow-wrap: anywhere;
+}
+
+.tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.tag {
+  border: 1px solid #334b2d;
+  color: var(--green);
+  padding: 9px 12px;
+  font-size: 11px;
+  transition: .2s;
+}
+
+.tag:hover {
+  color: var(--pink);
+  border-color: var(--pink);
+  text-shadow: 0 0 8px var(--pink);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.memory {
+  border: 1px solid var(--line);
+  background: #090d0a;
+  padding: 22px;
+  min-height: 155px;
+}
+
+.date {
+  font-size: 10px;
+  color: var(--green);
+  margin-bottom: 18px;
+}
+
+.memory h3 {
+  color: var(--pink);
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.memory p {
+  color: #899287;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.quote {
+  border-left: 2px solid var(--pink);
+  padding: 12px 0 12px 24px;
+  margin-top: 35px;
+  color: #c5b4c7;
+  line-height: 2;
+  font-size: 13px;
+  max-width: 650px;
+}
+
+.btn {
+  display: inline-block;
+  border: 1px solid var(--green);
+  color: var(--green);
+  padding: 13px 18px;
+  font: inherit;
+  font-size: 11px;
+  background: transparent;
+  margin-top: 28px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn:hover {
+  background: var(--green);
+  color: #050706;
+}
+
+/* who is this user*/
+.quiz-panel {
+  max-width: 760px;
+  margin-top: 55px;
+  border: 1px solid var(--pink);
+  background: #08090b;
+  padding: 25px;
+  position: relative;
+  box-shadow: 0 0 20px #f05bff0b;
+}
+
+.quiz-label {
+  color: var(--pink);
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-bottom: 22px;
+  animation: flicker 4s infinite;
+}
+
+.quiz-question {
+  color: var(--green);
+  font-size: clamp(20px, 4vw, 30px);
+  margin-bottom: 12px;
+  text-shadow: 0 0 12px #a5ff0022;
+}
+
+.quiz-description {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-bottom: 24px;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quiz-option {
+  min-width: 0;
+  border: 1px solid #334b2d;
+  background: #050706;
+  color: var(--green);
+  padding: 16px 12px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-align: left;
+  overflow-wrap: anywhere;
+  transition: .2s;
+}
+
+.quiz-option:hover,
+.quiz-option:focus-visible {
+  outline: none;
+  border-color: var(--pink);
+  color: var(--pink);
+  background: #f05bff0a;
+  box-shadow: 0 0 14px #f05bff14;
+}
+
+.quiz-option:disabled {
+  cursor: default;
+  opacity: .65;
+}
+
+.quiz-option.correct {
+  border-color: var(--green);
+  color: var(--green);
+  background: #a5ff0010;
+}
+
+.quiz-option.incorrect {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.quiz-result {
+  min-height: 48px;
+  margin-top: 22px;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.quiz-result.success {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.quiz-result.failure {
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+.quiz-reset {
+  display: none;
+  margin-top: 16px;
+}
+
+.quiz-reset.visible {
+  display: inline-block;
+}
+
+.quiz-footer {
+  margin-top: 18px;
+  color: #596354;
+  font-size: 9px;
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 28px 7%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: #687364;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+footer span {
+  color: var(--green);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 94%, 96%, 100% { opacity: 1; }
+  95% { opacity: .65; }
+  97% { opacity: .85; }
+}
+
+@keyframes panelScan {
+  0% { left: -100%; }
+  15%, 100% { left: 150%; }
+}
+
+@media(max-width:700px) {
+  nav {
+    padding: 20px 5%;
+  }
+
+  main {
+    padding: 60px 6%;
+  }
+
+  h1 {
+    letter-spacing: -3px;
+  }
+
+  .data {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .memory-grid,
+  .quiz-options {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 9px;
+  }
+
+  .quiz-panel {
+    padding: 20px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a href="https://laincelcore.github.io/wired/" class="logo">
+    WIRED<span>//</span>404
+  </a>
+
+  <div class="nav-links">
+    <a href="https://laincelcore.github.io/wired/">HOME</a>
+    <a href="https://laincelcore.github.io/layer01/">LAYER 01</a>
+    <a href="https://laincelcore.github.io/layer02/">LAYER 02</a>
+    <a href="https://laincelcore.github.io/wired/memories.html">MEMORY ARCHIVE</a>
+  </div>
+</nav>
+
+<main>
+
+  <div class="status">SCANNING INTERESTS...</div>
+  <div class="eyebrow">LAYER 02 // HOBBIES & FANDOMS</div>
+
+  <h1>
+    THINGS I LOVE
+    <span>HOBBIES // FANDOMS // FIXATIONS_</span>
+  </h1>
+
+  <p class="description">
+    A little database of things I enjoy, things I obsess over,
+    and fictional worlds I refuse to leave.
+  </p>
+
+  <div class="panel">
+    <div class="panel-head">
+      root@wired:~$ list --interests
+    </div>
+
+    <div class="data">
+      <div class="key">HOBBIES</div>
+      <div class="value">draw, write, code, playing chess and video games</div>
+    </div>
+
+    <div class="data">
+      <div class="key">FANDOMS</div>
+      <div class="value">serial experiments lain, erased, blood c, another, shigatsu wa kimi no uso, 
+        corpse party, danganronpa (played all 3 games), studio ghibli, kingdom hearts 2, persona 4, 
+        kpop (wonyoung, ive, dreamcatcher, hearts2hearts, babymonster, purple kiss, pixy, etc) </div>
+    </div>
+
+    <div class="data">
+      <div class="key">FAVORITE CHARACTERS</div>
+      <div class="value">lain iwakura, toko fukawa, chihiro fujisaki, saya kisaragi, aoi fukasaku</div>
+    </div>
+
+    <div class="data">
+      <div class="key">MUSIC</div>
+      <div class="value">i love all kinds of music</div>
+    </div>
+
+    <div class="data">
+      <div class="key">CURRENT FIXATION</div>
+      <div class="value">shhh.....</div>
+    </div>
+
+    <div class="tags">
+      <span class="tag">[FANDOM 01]</span>
+      <span class="tag">[FANDOM 02]</span>
+      <span class="tag">[FAVORITE GAME]</span>
+      <span class="tag">[CURRENT FIXATION]</span>
+    </div>
+  </div>
+
+  <div class="quote">
+    The things we love leave traces of who we are.
+  </div>
+
+  <!-- who is this user acces -->
+  <section class="quiz-panel">
+    <div class="quiz-label">
+      ⚠ RESTRICTED ACCESS // IDENTITY VERIFICATION
+    </div>
+
+    <h2 class="quiz-question">WHICH USER?</h2>
+
+    <p class="quiz-description">
+      Four identities have been detected in the system.
+      Only one of them belongs here.
+      <br>
+      Choose carefully. The WIRED is watching.
+    </p>
+
+    <div class="quiz-options" id="quizOptions">
+      <button class="quiz-option" data-answer="UNKNOWN">
+        &gt; UNKNOWN
+      </button>
+
+      <button class="quiz-option" data-answer="REDACTED">
+        &gt; (REDACTED)
+      </button>
+
+      <button class="quiz-option" data-answer="LAINCELCORE">
+        &gt; LAINCELCORE
+      </button>
+
+      <button class="quiz-option" data-answer="YOU">
+        &gt; YOU
+      </button>
+    </div>
+
+    <div
+      class="quiz-result"
+      id="quizResult"
+      aria-live="polite"
+    >AWAITING INPUT..._</div>
+
+    <button class="btn quiz-reset" id="quizReset">
+      ↻ TRY AGAIN
+    </button>
+
+    <div class="quiz-footer">
+      SYSTEM: IDENTITY CHECK // STATUS: PENDING
+    </div>
+  </section>
+  <!-- end-->
+
+  <a class="btn" href="https://laincelcore.github.io/wired/">
+    ← RETURN HOME
+  </a>
+
+</main>
+
+<footer>
+  <div>WIRED//484 — <span>STAY CONNECTED.</span></div>
+  <div>PERSONAL DIGITAL ARCHIVE · 2026</div>
+</footer>
+
+<script>
+/* IDENTITY VERIFICATION */
+
+const quizOptions = document.querySelectorAll(".quiz-option");
+const quizResult = document.getElementById("quizResult");
+const quizReset = document.getElementById("quizReset");
+const quizFooter = document.querySelector(".quiz-footer");
+
+quizOptions.forEach((option) => {
+  option.addEventListener("click", () => {
+    const answer = option.dataset.answer;
+
+    // Prevent multiple answers til it resets
+    quizOptions.forEach((button) => {
+      button.disabled = true;
+    });
+
+    quizReset.classList.add("visible");
+
+    if (answer === "YOU") {
+      option.classList.add("correct");
+      quizResult.className = "quiz-result success";
+      quizResult.textContent =
+        "IDENTITY CONFIRMED. YOU WERE HERE ALL ALONG. WELCOME TO THE WIRED.";
+
+      quizFooter.textContent =
+        "SYSTEM: IDENTITY VERIFIED // ACCESS GRANTED";
+    } else {
+      option.classList.add("incorrect");
+      quizResult.className = "quiz-result failure";
+      quizResult.textContent =
+        "ACCESS DENIED. THAT IS NOT THE ANSWER. TRY AGAIN... IF YOU DARE.";
+
+      quizFooter.textContent =
+        "SYSTEM: IDENTITY MISMATCH // ACCESS DENIED";
+    }
+  });
+});
+
+quizReset.addEventListener("click", () => {
+  quizOptions.forEach((button) => {
+    button.disabled = false;
+    button.classList.remove("correct", "incorrect");
+  });
+
+  quizResult.className = "quiz-result";
+  quizResult.textContent = "AWAITING INPUT..._";
+
+  quizFooter.textContent =
+    "SYSTEM: IDENTITY CHECK // STATUS: PENDING";
+
+  quizReset.classList.remove("visible");
+});
+</script>
+
+</body>
+</html>
